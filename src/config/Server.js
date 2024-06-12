@@ -1,7 +1,7 @@
 const Server = {
-    authURL: 'http://bookstore-server-16u4.onrender.com/bookstore/api/auth',
-    usersURL: 'http://bookstore-server-16u4.onrender.com/bookstore/api/users',
-    booksURL: 'http://bookstore-server-16u4.onrender.com/bookstore/api/books',
+    authURL: 'https://bookstore-server-16u4.onrender.com/bookstore/api/auth',
+    usersURL: 'https://bookstore-server-16u4.onrender.com/bookstore/api/users',
+    booksURL: 'https://bookstore-server-16u4.onrender.com/bookstore/api/books',
 }
 
 export default Server;
