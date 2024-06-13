@@ -7,14 +7,17 @@ import axios from 'axios';
 function Home() {
 
     const [books, setBooks] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios.get(Server.booksURL + '?count=6');
                 setBooks(response.data);
+                setIsLoading(false);
             } catch (error) {
                 setBooks([]);
+                setIsLoading(false);
             }
         };
         fetchData();
@@ -49,14 +52,18 @@ function Home() {
                             <div>NEW_LAUNCHES</div>
                             <div style={{ backgroundColor: '#ee9843', borderRadius: '1rem' }} className='h-1 w-full'></div>
                         </div>
-                        <div className="min-h-fit w-full grid gap-4 justify-center items-center place-content-center place-items-center grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                            {
-                                books.length > 0 &&
-                                books.map((book, index) => {
-                                    return <Card id={book._id} title={book.title} author={book.author} price={book.price} photo={book.photo} key={index} />;
-                                })
-                            }
-                        </div>
+                        {isLoading ? ( // Conditionally rendering loading or cards
+                            <div>Loading...</div>
+                        ) : (
+                            <div className="min-h-fit w-full grid gap-4 justify-center items-center place-content-center place-items-center grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                                {
+                                    books.length > 0 &&
+                                    books.map((book, index) => {
+                                        return <Card id={book._id} title={book.title} author={book.author} price={book.price} photo={book.photo} key={index} />;
+                                    })
+                                }
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

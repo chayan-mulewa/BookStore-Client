@@ -6,18 +6,24 @@ import Button from './Button';
 import Drawer from './Drawer';
 
 function Header() {
+
+    const { myDetails } = useDataContext();
+
+    if (document.cookie) {
+        if (!myDetails.role) {
+            return <div className='h-20 w-screen px-10 fixed flex justify-center items-center text-center text-2xl font-bold' style={{ backgroundColor: '#f5f6f6' }}  ><h1>Loading...</h1></div>;
+        }
+    }
+
     const [isOpen, setIsOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 600);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const { myDetails } = useDataContext();
-
-    console.log(myDetails)
 
     const toggleNav = () => setIsOpen(!isOpen);
 
     useEffect(() => {
         const handleResize = () => {
-            setIsMobile(window.innerWidth < 650);
+            setIsMobile(window.innerWidth < 768);
         };
 
         window.addEventListener('resize', handleResize);
@@ -38,6 +44,10 @@ function Header() {
         };
     }, []);
 
+    const handleLogout = () => {
+        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    }
+
     return (
         <>
             <header className='h-20 w-screen px-10 fixed' style={{ backgroundColor: '#f5f6f6' }} >
@@ -51,11 +61,15 @@ function Header() {
                                     <Link to="/search" onClick={toggleNav}>SEARCH</Link>
                                     {isLoggedIn ? (
                                         <>
-                                            <Link to="/cart" onClick={toggleNav}>CART</Link>
                                             {myDetails.role === 'admin' && (
-                                                <Link to="/admin/post-book" onClick={toggleNav}>POST BOOK</Link>
+                                                <>
+                                                    <Link to="/admin/post-book" onClick={toggleNav}>POST</Link>
+                                                    <Link to="/admin/delete-book" onClick={toggleNav}>DELETE</Link>
+                                                    <Link to="/admin/update-book" onClick={toggleNav}>UPDATE</Link>
+                                                </>
                                             )}
-                                            <Link to="/logout" onClick={toggleNav}>LOGOUT</Link>
+                                            <Link to="/cart" onClick={toggleNav}>CART</Link>
+                                            <button onClick={handleLogout}>LOGOUT</button>
                                         </>
                                     ) : (
                                         <>
@@ -75,12 +89,16 @@ function Header() {
                     <ul className={`flex flex-row gap-4 ${isMobile ? 'hidden' : ''}`}>
                         {isLoggedIn ? (
                             <>
-                                <Link to="/cart">CART</Link>
                                 {
                                     myDetails.role === 'admin' && (
-                                        <Link to="/admin/post-book">POST_BOOK</Link>
+                                        <>
+                                            <Link to="/admin/post-book" onClick={toggleNav}>POST</Link>
+                                            <Link to="/admin/delete-book" onClick={toggleNav}>DELETE</Link>
+                                            <Link to="/admin/update-book" onClick={toggleNav}>UPDATE</Link>
+                                        </>
                                     )}
-                                <Link to="/logout">LOGOUT</Link>
+                                <Link to="/cart">CART</Link>
+                                <button onClick={handleLogout}>LOGOUT</button>
                             </>
                         ) : (
                             <>

@@ -12,6 +12,7 @@ function Search() {
     const [category, setCategory] = useState('');
     const [type, setType] = useState('');
     const [books, setBooks] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleSearch = (value) => {
         setSearch(value);
@@ -27,16 +28,19 @@ function Search() {
 
     const handleSearchByEnterKey = async (event) => {
         if (event.key === 'Enter') {
-            if (search == '') return
-            if (type == '') {
-                alert("Please Selete Type")
+            if (search === '') return;
+            if (type === '') {
+                alert("Please Select Type");
                 return;
             }
             try {
+                setIsLoading(true);
                 const response = await axios.get(Server.booksURL + `?type=${type}&&data=${search}&&category=${category}`);
                 setBooks(response.data);
             } catch (error) {
-
+                console.error("Error searching books:", error);
+            } finally {
+                setIsLoading(false);
             }
         }
     };
@@ -67,12 +71,17 @@ function Search() {
                     </div>
                 </div>
                 <div className="min-h-fit grid gap-4 p-4 justify-center items-center place-content-center place-items-center grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                    {
-                        books.length > 0 &&
-                        books.map((book, index) => {
-                            return <Card id={book._id} title={book.title} author={book.author} price={book.price} photo={book.photo} key={index} />;
-                        })
-                    }
+                    {isLoading ? (
+                        <div className='text-xl font-bold'>Loading...</div>
+                    ) : (
+                        books.length > 0 ? (
+                            books.map((book, index) => (
+                                <Card id={book._id} title={book.title} author={book.author} price={book.price} photo={book.photo} key={index} />
+                            ))
+                        ) : (
+                            <div className='text-xl font-bold'>Nothing</div>
+                        )
+                    )}
                 </div>
             </div>
         </div>
